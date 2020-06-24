@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QColor>
 #include "../gap-buffer.hpp"
-#include "qtz-widgets.hpp"
+#include "../../../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT HexMetadataItem : public QObject {
     Q_OBJECT

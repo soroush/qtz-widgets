@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QModelIndex>
 #include <QModelIndexList>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 QT_BEGIN_NAMESPACE
 class QVBoxLayout;

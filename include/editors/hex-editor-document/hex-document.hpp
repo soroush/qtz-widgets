@@ -6,7 +6,7 @@
 #include "gap-buffer.hpp"
 #include "metadata/hex-metadata.hpp"
 #include "hex-cursor.hpp"
-#include "qtz-widgets.hpp"
+#include "../../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT HexDocument: public QObject {
     Q_OBJECT

@@ -3,7 +3,7 @@
 
 #include <QSqlTableModel>
 #include <qtz/data/i-insert-record.hpp>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 //class QTZ_WIDGETS_SHARED_EXPORT IDialogInsertRecord : public IInsertRecord
 //{

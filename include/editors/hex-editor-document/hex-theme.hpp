@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QColor>
-#include "qtz-widgets.hpp"
+#include "../../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT HexTheme: public QObject {
     Q_OBJECT

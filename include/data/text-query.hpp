@@ -2,7 +2,7 @@
 #define QTZ_TEXTQUERY_HPP
 
 #include <QWidget>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -6,7 +6,7 @@
 #include <QFrame>
 #include "hex-editor-document/hex-document.hpp"
 #include "hex-editor-paint/hex-metrics.hpp"
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 class HexEditorPrivate;
 

@@ -2,7 +2,7 @@
 #define DIALOGEDITITEM_H
 
 #include <QDialog>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT DialogEditItem : public QDialog {
     Q_OBJECT

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "gap-buffer.hpp"
-#include "qtz-widgets.hpp"
+#include "../../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT HexCursor : public QObject {
     Q_OBJECT

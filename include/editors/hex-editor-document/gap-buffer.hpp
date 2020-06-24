@@ -5,7 +5,7 @@
 
 #include <QByteArray>
 #include <QIODevice>
-#include "qtz-widgets.hpp"
+#include "../../qtz-widgets.hpp"
 
 //#define GAP_BUFFER_TIDY
 

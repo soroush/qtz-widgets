@@ -1,8 +1,8 @@
 #ifndef QTZ_COLOR_BUTTON_HPP
 #define QTZ_COLOR_BUTTON_HPP
 
-#include "qtz-widgets.hpp"
 #include <QToolButton>
+#include "../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT ColorButton : public QToolButton {
     Q_OBJECT

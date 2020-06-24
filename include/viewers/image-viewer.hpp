@@ -21,7 +21,7 @@
 #   endif
 #endif
 
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT ImageViewer : public QGraphicsView {
     Q_OBJECT

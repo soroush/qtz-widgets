@@ -1,12 +1,12 @@
 #ifndef QTZ_ASYNCHRONOUSMAINWINDOW_HPP
 #define QTZ_ASYNCHRONOUSMAINWINDOW_HPP
 
-#include "qtz-widgets.hpp"
 #include <QMainWindow>
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include "../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT AsynchronousMainWindow : public QMainWindow {
     Q_OBJECT

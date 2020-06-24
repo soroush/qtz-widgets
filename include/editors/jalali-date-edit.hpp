@@ -6,7 +6,7 @@
 #include <QDate>
 #include <QAbstractSpinBox>
 #include <qtz/core/jalali-date.hpp>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT JalaliDateEdit : public QAbstractSpinBox {
     Q_OBJECT

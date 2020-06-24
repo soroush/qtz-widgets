@@ -2,7 +2,7 @@
 #define QTZ_FONT_BUTTON_HPP
 
 #include <QToolButton>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 class QTZ_WIDGETS_SHARED_EXPORT FontButton : public QToolButton {
     Q_OBJECT

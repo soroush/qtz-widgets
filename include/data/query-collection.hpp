@@ -8,7 +8,7 @@
 #include <QList>
 #include <QPair>
 #include <qtz/data/database-pool.hpp>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 
 class QTZ_WIDGETS_SHARED_EXPORT QueryCollection : public QWidget

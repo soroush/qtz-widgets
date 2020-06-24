@@ -5,7 +5,7 @@
 #include <QSqlRelationalTableModel>
 #include "data/dialog-insert-item.hpp"
 #include "data/dialog-edit-item.hpp"
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

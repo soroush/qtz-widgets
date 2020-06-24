@@ -4,7 +4,7 @@
 #include <QAbstractSpinBox>
 #include <QWheelEvent>
 #include <qtz/core/qtz-core.hpp>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 // TODO: Add Q_PROPERTY to widget
 // TODO: Add Formatting options to this widget

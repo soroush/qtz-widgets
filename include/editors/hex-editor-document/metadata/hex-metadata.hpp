@@ -6,7 +6,7 @@
 #include <QHash>
 #include <QMap>
 #include "hex-metadata-item.hpp"
-#include "qtz-widgets.hpp"
+#include "../../../qtz-widgets.hpp"
 
 typedef QList<HexMetadataItem*> MetadataList;
 typedef QHash<integer_t, MetadataList> MetadataMap;

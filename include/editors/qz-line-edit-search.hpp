@@ -2,7 +2,7 @@
 #define QZLINEEDITSEARCH_H
 
 #include <QLineEdit>
-#include "../export.h"
+#include "../qtz-widgets.hpp"
 
 class QEvent;
 

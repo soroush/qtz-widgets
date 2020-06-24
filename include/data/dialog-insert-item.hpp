@@ -2,7 +2,7 @@
 #define DIALOGINSERTITEM_H
 
 #include <QDialog>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 QT_BEGIN_NAMESPACE
 class QSqlRelationalTableModel;

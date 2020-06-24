@@ -6,7 +6,7 @@
 #include <QFileDialog>
 #include <QDirModel>
 #include <qtz/core/qtz-core.hpp>
-#include "qtz-widgets.hpp"
+#include "../qtz-widgets.hpp"
 
 #ifndef Q_NULLPTR
 #if __cplusplus >= 201103L

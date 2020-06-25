@@ -14,9 +14,12 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
 endif()
 
 # Check for dependencies
-find_package(Qt5 COMPONENTS Core Widgets Sql REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Sql Network REQUIRED)
+find_package(OpenCV CONFIG REQUIRED core imgcodecs)
 if(NOT QTZ_LOCAL_BUILD)
-find_package(QtzData REQUIRED)
+find_package(QtzData CONFIG REQUIRED)
+find_package(QtzCore CONFIG REQUIRED)
+find_package(QtzSecurity CONFIG REQUIRED)
 endif()
 
 # Include directories
@@ -158,4 +161,6 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QtzWidgets.pc
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 # Link againsg dependencies
-target_link_libraries(QtzWidgets Qt5::Core Qt5::Widgets Qt5::Sql QtzData)
+target_link_libraries(QtzWidgets Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network
+    Qtz::QtzCore Qtz::QtzData Qtz::QtzSecurity
+    opencv_core opencv_imgcodecs)

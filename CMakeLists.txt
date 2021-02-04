@@ -22,17 +22,14 @@ find_package(QtzCore CONFIG REQUIRED)
 find_package(QtzSecurity CONFIG REQUIRED)
 endif()
 
-# Include directories
-include_directories("include")
-
 # OS-dependent sources
 set(OS_SOURCES )
 if(WIN32)
-    list(APPEND OS_SOURCES QtzWidgets.rc)
+    list(APPEND OS_SOURCES "${PROJECT_NAME}.rc")
 endif()
 
 # Define the library
-add_library (QtzWidgets SHARED
+add_library (${PROJECT_NAME} SHARED
     src/application/qtz-single-application.cpp
     src/application/qtz-single-application_p.hpp
     src/i18n/localizer.cpp
@@ -117,50 +114,68 @@ add_library (QtzWidgets SHARED
     src/editors/editable-label.ui
     src/misc/choose-file.ui
     src/security/dialog-user-login.ui
-    ${OS_SOURCES})
+    ${OS_SOURCES}
+)
 
-# Add 'd' suffix to debug builds
-set_property(TARGET QtzWidgets PROPERTY DEBUG_POSTFIX d)
+# Set properties
+set_target_properties(${PROJECT_NAME} PROPERTIES 
+    PROPERTIES VERSION 0.4.0
+    PROPERTIES SOVERSION 0
+    CXX_STANDARD 11
+    DEBUG_POSTFIX "d"
+    DEFINE_SYMBOL "QTZ_WIDGETS_LIBRARY"
+)
 
-# Set version
-set_target_properties(QtzWidgets PROPERTIES VERSION 0.4.0)
-set_target_properties(QtzWidgets PROPERTIES SOVERSION 0)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC 
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> 
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 
-# pkg-config
-configure_file(QtzWidgets.pc.in QtzWidgets.pc @ONLY)
-
-# Define symbol exporter
-target_compile_definitions(QtzWidgets PRIVATE -DQTZ_WIDGETS_LIBRARY)
-target_compile_features(QtzWidgets PRIVATE cxx_std_11)
+# Link against dependencies
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network
+    Qtz::QtzCore Qtz::QtzData Qtz::QtzSecurity
+    opencv_core opencv_imgcodecs)
 
 # Install and export
 include(GNUInstallDirs)
-target_include_directories(QtzWidgets PUBLIC  
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>  
-    $<INSTALL_INTERFACE:include/>
-)
 
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
+export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_NAME}Targets.cmake")
 
-install(TARGETS QtzWidgets
-    EXPORT QtzWidgetsConfig
+install(TARGETS ${PROJECT_NAME}
+    EXPORT "${PROJECT_NAME}Targets"
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+)
 
-export(TARGETS QtzWidgets FILE QtzWidgetsConfig.cmake)
+install(DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
 
-install(EXPORT QtzWidgetsConfig
-    FILE QtzWidgetsConfig.cmake
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    "${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(EXPORT "${PROJECT_NAME}Targets"
+    FILE "${PROJECT_NAME}Targets.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/
     NAMESPACE Qtz::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/)
+)
 
+install(FILES "cmake/${PROJECT_NAME}Config.cmake" 
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/
+)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QtzWidgets.pc 
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+# pkg-config
+configure_file("${PROJECT_NAME}.pc.in" "${PROJECT_NAME}.pc" @ONLY)
 
-# Link againsg dependencies
-target_link_libraries(QtzWidgets Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network
-    Qtz::QtzCore Qtz::QtzData Qtz::QtzSecurity
-    opencv_core opencv_imgcodecs)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)

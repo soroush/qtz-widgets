@@ -1,0 +1,7 @@
+include(CMakeFindDependencyMacro)
+find_package(Qt5 COMPONENTS Core Widgets Sql Network REQUIRED)
+find_package(OpenCV CONFIG REQUIRED core imgcodecs)
+find_package(QtzData CONFIG REQUIRED)
+find_package(QtzCore CONFIG REQUIRED)
+find_package(QtzSecurity CONFIG REQUIRED)
+include("${CMAKE_CURRENT_LIST_DIR}/QtzWidgetsTargets.cmake")

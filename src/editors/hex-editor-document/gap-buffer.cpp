@@ -1,5 +1,6 @@
 #include "editors/hex-editor-document/gap-buffer.hpp"
 #include <cstring>
+#include <stdexcept>
 
 #define BASE_GAP_SIZE 65536 // 64k buffer
 //#define BASE_GAP_SIZE 4

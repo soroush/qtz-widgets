@@ -137,7 +137,7 @@ void JalaliDateEdit::focusOutEvent(QFocusEvent* event) {
 }
 
 void JalaliDateEdit::wheelEvent(QWheelEvent* event) {
-    if(event->delta()>0) {
+    if(event->angleDelta().x() > 0) {
         stepBy(1);
     } else {
         stepBy(-1);
@@ -212,7 +212,7 @@ QSize JalaliDateEdit::sizeHint() const {
     int h = orig.height();
     int w = 0;
     QString s = lineEdit()->text() + QLatin1Char(' ');
-    w = fm.width(s) + 30; // cursor blinking space.
+    w = fm.horizontalAdvance(s) + 30; // cursor blinking space.
     // TODO: calculate width of indicators instead
     return QSize(w, h);
 }

@@ -7,11 +7,7 @@
 #include <QAction>
 #include <QDebug>
 #include <opencv2/core/version.hpp>
-#if   (CV_VERSION_EPOCH==2)
-#include <opencv2/imgproc/imgproc.hpp>
-#elif (CV_VERSION_EPOCH==3)
 #include <opencv2/imgproc.hpp>
-#endif
 
 ImageViewer::ImageViewer(QWidget* parent) : QGraphicsView(parent)
     , m_fitInView(false)
@@ -58,7 +54,7 @@ void ImageViewer::setImage(const QPixmap& image) {
     if(m_preserveMatrix) {
         previousTransform = transform();
     }
-    resetMatrix();
+    resetTransform();
     scene()->clear();
     scene()->setSceneRect(0, 0, image.width(), image.height());
     scene()->addItem(item);
@@ -68,13 +64,13 @@ void ImageViewer::setImage(const QPixmap& image) {
         // Restore transformation matrix
         setTransform(previousTransform);
     } else {
-        resetMatrix();
+        resetTransform();
     }
 }
 
 void ImageViewer::setImage(const cv::Mat& image) {
     if(image.empty()) {
-        resetMatrix();
+        resetTransform();
         scene()->clear();
         return;
     }
@@ -103,7 +99,7 @@ void ImageViewer::setFitInView(bool fit) {
     if(fit) {
         fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
     } else {
-        resetMatrix();
+        resetTransform();
     }
     emit fitInViewChanged(m_fitInView);
 }
@@ -134,7 +130,7 @@ void ImageViewer::showContextMenu(const QPoint& position) {
     fit->setCheckable(true);
     fit->setChecked(m_fitInView);
     connect(resetZoom, &QAction::triggered,
-            this, &QGraphicsView::resetMatrix);
+            this, &QGraphicsView::resetTransform);
     connect(fit, &QAction::toggled,
             this, &ImageViewer::setFitInView);
     contextMenu.addAction(fit);
@@ -166,8 +162,8 @@ void ImageViewer::resizeEvent(QResizeEvent* e) {
 }
 
 void ImageViewer::wheelEvent(QWheelEvent* e) {
-    if(e->delta() != 0 && !m_fitInView) {
-        qreal scaleFactor = e->delta() > 0 ? m_zoomFactor : 1.0 / m_zoomFactor;
+    if(e->angleDelta().x() != 0 && !m_fitInView) {
+        qreal scaleFactor = e->angleDelta().x() > 0 ? m_zoomFactor : 1.0 / m_zoomFactor;
         scale(scaleFactor, scaleFactor);
     }
     e->accept();

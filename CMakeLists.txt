@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.19.0)
 
 project(QtzWidgets VERSION 0.4.0 
     DESCRIPTION "Qtz Rapid Application Development Framework, Widgets Module"
@@ -9,14 +9,14 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-if(CMAKE_VERSION VERSION_LESS "3.7.0")
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-endif()
-
 # Check for dependencies
-find_package(Qt5 COMPONENTS Core Widgets Sql REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Sql Network REQUIRED)
+find_package(OpenCV CONFIG REQUIRED)
+
 if(NOT QTZ_LOCAL_BUILD)
+find_package(QtzCore REQUIRED)
 find_package(QtzData REQUIRED)
+find_package(QtzSecurity REQUIRED)
 endif()
 
 # Include directories
@@ -116,27 +116,27 @@ add_library (QtzWidgets SHARED
     src/security/dialog-user-login.ui
     ${OS_SOURCES})
 
-# Add 'd' suffix to debug builds
-set_property(TARGET QtzWidgets PROPERTY DEBUG_POSTFIX d)
-
-# Set version
-set_target_properties(QtzWidgets PROPERTIES VERSION 0.4.0)
-set_target_properties(QtzWidgets PROPERTIES SOVERSION 0)
+# Set properties
+set_target_properties(QtzWidgets PROPERTIES 
+    VERSION 0.4.0
+    SOVERSION 0
+    DEBUG_POSTFIX d
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED TRUE
+    DEFINE_SYMBOL QTZ_WIDGETS_LIBRARY
+)
 
 # pkg-config
 configure_file(QtzWidgets.pc.in QtzWidgets.pc @ONLY)
 
-# Define symbol exporter
-target_compile_definitions(QtzWidgets PRIVATE -DQTZ_WIDGETS_LIBRARY)
-target_compile_features(QtzWidgets PRIVATE cxx_std_11)
-
-# Install and export
 include(GNUInstallDirs)
-target_include_directories(QtzWidgets PUBLIC  
+    target_include_directories(QtzWidgets PUBLIC  
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>  
+    $<BUILD_INTERFACE:${QTZ_LOCAL_INCLUDES_DIR}>  
     $<INSTALL_INTERFACE:include/>
 )
 
+# Install and export
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
 
 install(TARGETS QtzWidgets
@@ -158,4 +158,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QtzWidgets.pc
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 # Link againsg dependencies
-target_link_libraries(QtzWidgets Qt5::Core Qt5::Widgets Qt5::Sql QtzData)
+target_link_libraries(QtzWidgets Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network opencv_core opencv_imgcodecs QtzCore QtzData QtzSecurity)

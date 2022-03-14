@@ -19,9 +19,6 @@ find_package(QtzData REQUIRED)
 find_package(QtzSecurity REQUIRED)
 endif()
 
-# Include directories
-include_directories("include")
-
 # OS-dependent sources
 set(OS_SOURCES )
 if(WIN32)
@@ -124,38 +121,58 @@ set_target_properties(QtzWidgets PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED TRUE
     DEFINE_SYMBOL QTZ_WIDGETS_LIBRARY
+    PUBLIC_HEADER "include/qtz-widgets.hpp"
 )
 
-# pkg-config
-configure_file(QtzWidgets.pc.in QtzWidgets.pc @ONLY)
-
-include(GNUInstallDirs)
-    target_include_directories(QtzWidgets PUBLIC  
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>  
-    $<BUILD_INTERFACE:${QTZ_LOCAL_INCLUDES_DIR}>  
-    $<INSTALL_INTERFACE:include/>
+target_include_directories(${PROJECT_NAME}
+    PUBLIC 
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> 
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+# Link againsg dependencies
+target_link_libraries(QtzWidgets 
+    PUBLIC 
+        Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network 
+        opencv_core opencv_imgcodecs 
+        QtzCore QtzData QtzSecurity
+)
+
+# Copy headers for local builds
+if(QTZ_LOCAL_BUILD)
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND 
+    ${CMAKE_COMMAND} -P 
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/copy_local_includes.cmake" 
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/" "widgets" "${QTZ_LOCAL_INCLUDES_DIR}"
+)
+endif()
 
 # Install and export
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
+
+include(GNUInstallDirs)
+
+install(DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
 
 install(TARGETS QtzWidgets
     EXPORT QtzWidgetsConfig
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 export(TARGETS QtzWidgets FILE QtzWidgetsConfig.cmake)
 
 install(EXPORT QtzWidgetsConfig
     FILE QtzWidgetsConfig.cmake
-    NAMESPACE Qtz::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/)
 
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QtzWidgets.pc 
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
-# Link againsg dependencies
-target_link_libraries(QtzWidgets Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network opencv_core opencv_imgcodecs QtzCore QtzData QtzSecurity)
+# pkg-config
+configure_file(QtzWidgets.pc.in QtzWidgets.pc @ONLY)

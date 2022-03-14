@@ -112,9 +112,8 @@ add_library (${PROJECT_NAME} SHARED
     src/security/dialog-user-login.ui
     ${OS_SOURCES}
 )
+
 # Set properties
-
-
 set_target_properties(QtzWidgets PROPERTIES 
     VERSION 0.4.0
     SOVERSION 0
@@ -154,7 +153,7 @@ endif()
 
 include(GNUInstallDirs)
 
-install(DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
+export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_NAME}Targets.cmake")
 
 install(TARGETS ${PROJECT_NAME}
     EXPORT "${PROJECT_NAME}Targets"
@@ -167,9 +166,18 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY "include/" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qtz/widgets)
 
-install(EXPORT QtzWidgetsConfig
-    FILE QtzWidgetsConfig.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/)
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    "${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(EXPORT "${PROJECT_NAME}Targets"
+    FILE "${PROJECT_NAME}Targets.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/
+)
 
 install(FILES "cmake/${PROJECT_NAME}Config.cmake" 
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
@@ -180,4 +188,6 @@ install(FILES "cmake/${PROJECT_NAME}Config.cmake"
 configure_file("${PROJECT_NAME}.pc.in" "${PROJECT_NAME}.pc" @ONLY)
 
 # pkg-config
-configure_file(QtzWidgets.pc.in QtzWidgets.pc @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)

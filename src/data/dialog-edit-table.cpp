@@ -63,7 +63,8 @@ void DialogEditTable::remove(QModelIndexList indexes)
     if(indexes.isEmpty()) {
         return;
     }
-    qSort(indexes.begin(), indexes.end(), qGreater<QModelIndex>());
+    std::sort(indexes.begin(), indexes.end(), 
+        [](const QModelIndex &a, const QModelIndex &b) { return b < a; } );
     for(QModelIndexList::const_iterator iter = indexes.constBegin();
             iter != indexes.constEnd(); ++iter) {
         model->removeRow((*iter).row(), (*iter).parent());

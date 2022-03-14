@@ -97,7 +97,7 @@ void SexagesimalSpinBox::focusOutEvent(QFocusEvent* event) {
 
 void SexagesimalSpinBox::wheelEvent(QWheelEvent* event) {
     //+000° 00′ 00″
-    int proposedChange = (event->delta()/120.0);
+    int proposedChange = (event->angleDelta().x()/120.0);
     this->stepBy(proposedChange);
     event->accept();
 }

@@ -424,13 +424,13 @@ void HexEditorPrivate::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void HexEditorPrivate::wheelEvent(QWheelEvent* event) {
-    if(!this->_document || !this->_document->length() || (event->orientation() != Qt::Vertical)) {
+    if(!this->_document || !this->_document->length() || (event->angleDelta().x() != 0)) {
         event->ignore();
         return;
     }
 
     HexCursor* cursor = this->_document->cursor();
-    sinteger_t numdegrees = event->delta() / 8, numsteps = numdegrees / 15;
+    sinteger_t numdegrees = event->angleDelta().x() / 8, numsteps = numdegrees / 15;
     sinteger_t maxlines = this->_document->length() / HexMetrics::BYTES_PER_LINE;
     sinteger_t pos = this->_vscrollbar->sliderPosition() - (numsteps * HexEditorPrivate::WHELL_SCROLL_LINES);
 

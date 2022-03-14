@@ -78,7 +78,7 @@ void HexMetrics::calculate(HexDocument* document, const QFontMetrics& fm) {
 void HexMetrics::calculate(const QFontMetrics& fm) {
     this->calculateAddressWidth();
 
-    this->_charwidth = fm.width(" ");
+    this->_charwidth = fm.horizontalAdvance(" ");
     this->_charheight = fm.height();
 
     this->_xposhex = this->_charwidth * (this->_addresswidth + 1);

@@ -13,15 +13,16 @@
 
 #include <QDebug>
 
-DialogDatabaseConfig::DialogDatabaseConfig(KeyRing* keyRing, QWidget* parent) :
-    QDialog(parent),
-    ui(new Ui::DialogDatabaseConfig),
-    tested(false), connected(false) ,
-    m_keyRing(keyRing) {
+DialogDatabaseConfig::DialogDatabaseConfig(KeyRing* keyRing, QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::DialogDatabaseConfig)
+    , tested(false), connected(false)
+    , m_keyRing(keyRing)
+    , m_doEncrypt(false) 
+    {
     ui->setupUi(this);
     // Remove maximize and minimize buttons
-    this->setWindowFlags(Qt::Dialog | Qt::WindowContextHelpButtonHint |
-                         Qt::WindowCloseButtonHint);
+    this->setWindowFlags(Qt::Dialog | Qt::WindowContextHelpButtonHint | Qt::WindowCloseButtonHint);
     initializeDatabaseSystems();
     createConnections();
     bool shouldRemember =
@@ -62,9 +63,7 @@ void DialogDatabaseConfig::initializeDatabaseSystems() {
         ui->comboBoxDatabaseType->addItem(p.providerName(), p.providerCode());
     }
     // Establish first valid state:
-    quint8 type = ui->comboBoxDatabaseType->itemData(
-                      ui->comboBoxDatabaseType->currentIndex()
-                  ).toUInt();
+    quint8 type = ui->comboBoxDatabaseType->itemData(ui->comboBoxDatabaseType->currentIndex()).toUInt();
     currentType = static_cast<DataProvider::Type>(type);
     quint32 port = DataProviderInformation::getInstance()->getProviderInfo(
                        currentType).defaultPort();
@@ -103,49 +102,51 @@ void DialogDatabaseConfig::readConnectionInfo() {
     updateDatabaseType(index);
     ui->checkBoxLocal->setChecked(
         Settings::getInstance()->value("ui/data/dbconfig/local").toBool());
-    ui->checkBoxDefaultPort->setChecked(
-        Settings::getInstance()->value("ui/data/dbconfig/defaultPort").toBool());
-    ui->checkBoxRemember->setChecked(
-        Settings::getInstance()->value("ui/data/dbconfig/remember").toBool());
+    ui->checkBoxDefaultPort->setChecked(Settings::getInstance()->value("ui/data/dbconfig/defaultPort").toBool());
+    ui->checkBoxRemember->setChecked(Settings::getInstance()->value("ui/data/dbconfig/remember").toBool());
     ui->spinBoxPort->setValue(instance->value("database/port").toInt());
     ui->lineEditSchema->setText(instance->value("database/schema").toString());
     QString userNameC = instance->value("database/username").toString();
-    QString usernameP;
-    usernameP = Crypto::decrypt(userNameC, m_keyRing->provideKey());
-    ui->lineEditUser->setText(usernameP);
     QString passwordC = instance->value("database/password").toString();
-    QString passwordP;
-    passwordP = Crypto::decrypt(passwordC, m_keyRing->provideKey());
-    ui->lineEditPassword->setText(passwordP);
+    if(m_doEncrypt)
+    {
+        QString usernameP = Crypto::decrypt(userNameC, m_keyRing->provideKey(), m_keyRing->provideIV());
+        QString passwordP = Crypto::decrypt(passwordC, m_keyRing->provideKey(), m_keyRing->provideIV());
+        ui->lineEditUser->setText(usernameP);
+        ui->lineEditPassword->setText(passwordP);
+    }
+    else
+    {
+        ui->lineEditUser->setText(userNameC);
+        ui->lineEditPassword->setText(passwordC);
+    }
 }
 
 void DialogDatabaseConfig::writeConnectionInfo() {
     QSettings* s = Settings::getInstance();
     #if QT_VERSION >= 0x050200
-    s->setValue("database/type",
-                ui->comboBoxDatabaseType->currentData(Qt::UserRole).toInt());
+    s->setValue("database/type", ui->comboBoxDatabaseType->currentData(Qt::UserRole).toInt());
     #else
-    s->setValue("database/type",
-                ui->comboBoxDatabaseType->itemData(ui->comboBoxDatabaseType->currentIndex()));
+    s->setValue("database/type", ui->comboBoxDatabaseType->itemData(ui->comboBoxDatabaseType->currentIndex()));
     #endif
-    s->setValue("database/host",
-                ui->lineEditHost->text());
-    s->setValue("database/port",
-                ui->spinBoxPort->value());
-    s->setValue("database/schema",
-                ui->lineEditSchema->text());
-    QString usernameC = Crypto::encrypt(ui->lineEditUser->text(), m_keyRing->provideKey());
-    s->setValue("database/username",
-                usernameC);
-    QString passwordC = Crypto::encrypt(ui->lineEditPassword->text(), m_keyRing->provideKey());
-    s->setValue("database/password",
-                passwordC);
-    s->setValue("ui/data/dbconfig/local",
-                ui->checkBoxLocal->isChecked());
-    s->setValue("ui/data/dbconfig/defaultPort",
-                ui->checkBoxDefaultPort->isChecked());
-    s->setValue("ui/data/dbconfig/remember",
-                ui->checkBoxRemember->isChecked());
+    s->setValue("database/host", ui->lineEditHost->text());
+    s->setValue("database/port", ui->spinBoxPort->value());
+    s->setValue("database/schema", ui->lineEditSchema->text());
+    if(m_doEncrypt)
+    {
+        QString usernameC = Crypto::encrypt(ui->lineEditUser->text(), m_keyRing->provideKey(), m_keyRing->provideIV());
+        QString passwordC = Crypto::encrypt(ui->lineEditPassword->text(), m_keyRing->provideKey(), m_keyRing->provideIV());
+        s->setValue("database/username", usernameC);
+        s->setValue("database/password", passwordC);
+    }
+    else 
+    {
+        s->setValue("database/username", ui->lineEditUser->text());
+        s->setValue("database/password", ui->lineEditPassword->text());
+    }
+    s->setValue("ui/data/dbconfig/local", ui->checkBoxLocal->isChecked());
+    s->setValue("ui/data/dbconfig/defaultPort",ui->checkBoxDefaultPort->isChecked());
+    s->setValue("ui/data/dbconfig/remember", ui->checkBoxRemember->isChecked());
 }
 
 void DialogDatabaseConfig::clearConnectionInfo() {

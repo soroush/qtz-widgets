@@ -27,30 +27,13 @@ protected:
     void changeEvent(QEvent* e);
 
 private:
-    Ui::DialogDatabaseConfig* ui;
     void initializeDatabaseSystems();
     void createConnections();
     bool testConnection();
     void readConnectionInfo();
     void writeConnectionInfo();
     void clearConnectionInfo();
-
-    DataProvider::Type currentType;
-    bool tested;
-    bool connected;
-    QString lastCustomHost;
-    quint32 lastCustomPort;
-    QString lastSSLCA;
-    QString lastSSLCert;
-    QString lastSSLKey;
-    // TODO: Move data operations into another thread
-    QFutureWatcher<bool> FW_testDBOpen;
-    QFutureWatcher<bool> FW_mainDBOpen;
-    QFuture<bool> F_testDBOpen;
-    QFuture<bool> F_mainDBOpen;
-
-    QSqlDatabase testDB;
-    KeyRing* m_keyRing;
+    bool testDBOpen();
 
 public slots:
     void accept();
@@ -67,7 +50,25 @@ private slots:
     void releaseGUI();
 
 private:
-    bool testDBOpen();
+
+    Ui::DialogDatabaseConfig* ui;
+    DataProvider::Type currentType;
+    bool tested;
+    bool connected;
+    QString lastCustomHost;
+    quint32 lastCustomPort;
+    QString lastSSLCA;
+    QString lastSSLCert;
+    QString lastSSLKey;
+    // TODO: Move data operations into another thread
+    QFutureWatcher<bool> FW_testDBOpen;
+    QFutureWatcher<bool> FW_mainDBOpen;
+    QFuture<bool> F_testDBOpen;
+    QFuture<bool> F_mainDBOpen;
+
+    QSqlDatabase testDB;
+    KeyRing* m_keyRing;
+    bool m_doEncrypt;
 };
 
 #endif // DIALOGDATABASECONFIG_H

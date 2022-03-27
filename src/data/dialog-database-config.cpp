@@ -39,10 +39,6 @@ DialogDatabaseConfig::DialogDatabaseConfig(bool doEncrypt, KeyRing* keyRing, QWi
 
 DialogDatabaseConfig::~DialogDatabaseConfig() {
     delete ui;
-    if(m_keyRing != nullptr) {
-        delete m_keyRing;
-        m_keyRing = nullptr;
-    }
 }
 
 void DialogDatabaseConfig::changeEvent(QEvent* e) {

@@ -19,8 +19,7 @@ class QTZ_WIDGETS_SHARED_EXPORT DialogDatabaseConfig : public QDialog {
     Q_OBJECT
     friend class GuiTest;
 public:
-    explicit DialogDatabaseConfig(KeyRing* keyRing = nullptr,
-                                  QWidget* parent = nullptr);
+    explicit DialogDatabaseConfig(bool doEncrypt = false, KeyRing* keyRing = nullptr, QWidget* parent = nullptr);
     ~DialogDatabaseConfig();
 
 protected:

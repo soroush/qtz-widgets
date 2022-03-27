@@ -13,12 +13,12 @@
 
 #include <QDebug>
 
-DialogDatabaseConfig::DialogDatabaseConfig(KeyRing* keyRing, QWidget* parent)
+DialogDatabaseConfig::DialogDatabaseConfig(bool doEncrypt, KeyRing* keyRing, QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::DialogDatabaseConfig)
     , tested(false), connected(false)
     , m_keyRing(keyRing)
-    , m_doEncrypt(false) 
+    , m_doEncrypt(doEncrypt)
     {
     ui->setupUi(this);
     // Remove maximize and minimize buttons

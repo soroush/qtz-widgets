@@ -121,7 +121,6 @@ set_target_properties(QtzWidgets PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED TRUE
     DEFINE_SYMBOL QTZ_WIDGETS_LIBRARY
-    PUBLIC_HEADER "include/qtz-widgets.hpp"
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -132,7 +131,7 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-# Link againsg dependencies
+# Link against dependencies
 target_link_libraries(QtzWidgets 
     PUBLIC 
         Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Network 
